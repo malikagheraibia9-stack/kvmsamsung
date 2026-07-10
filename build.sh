@@ -1,5 +1,6 @@
 #!/bin/bash
 SCRIPT_DIR="$(dirname $(readlink -fq $0))"
+KERNEL_VERSION="$(cd kernel-5.10 && make kernelversion 2>/dev/null)"
 
 # init & update git submodules
 git submodule update --init --recursive || true
@@ -101,4 +102,16 @@ build_kernel(){
     return $status
 }
 
-build_kernel
+pack_kernel() {
+    cd "${SCRIPT_DIR}/dist"
+
+    tar -cf "Droidspaces-KSUN-SM-A165F-${KERNEL_VERSION}-${BUILD_VERSION}.tar" boot.img && \
+        zip -9 "Droidspaces-KSUN-SM-A165F-${KERNEL_VERSION}-${BUILD_VERSION}.tar.zip" \
+        "Droidspaces-KSUN-SM-A165F-${KERNEL_VERSION}-${BUILD_VERSION}.tar" && \
+        rm -f "Droidspaces-KSUN-SM-A165F-${KERNEL_VERSION}-${BUILD_VERSION}.tar" boot.img
+
+    cd "${SCRIPT_DIR}"
+}
+
+build_kernel && \
+    pack_kernel
