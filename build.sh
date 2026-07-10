@@ -63,7 +63,10 @@ export CUSTOM_DEFCONFIGS_LIST
 build_kernel(){
     cd "${SCRIPT_DIR}/kernel"
 
-    env "${GKI_KERNEL_BUILD_OPTIONS[@]}" ./build/build.sh
+    env "${GKI_KERNEL_BUILD_OPTIONS[@]}" ./build/build.sh && \
+        cp \
+        "${SCRIPT_DIR}/out/target/product/a16/obj/KERNEL_OBJ/kernel-5.10/arch/arm64/boot/Image.gz" \
+        "${SCRIPT_DIR}/dist"
     local status=$?
 
     cd "${SCRIPT_DIR}"
